@@ -1,25 +1,49 @@
-import logo from './logo.svg';
 import './App.css';
+import React from "react"
+import Start from "./components/Start"
+import Quiz from "./components/Quiz"
 
 function App() {
+
+  // State declarations
+  const [gameStatus, setGameStatus] = React.useState("start")
+  const [userChoices, setUserChoices] = React.useState({
+    difficulty: "any",
+    category: "any",
+    number: "5"
+  })
+
+  // Function declarations
+  function userChoose(event) {
+    let {name, value} = event.target
+    if (name === "question-number" && parseInt(value) > 10) value = "10"
+
+    setUserChoices(prevChoice => ({
+      ...prevChoice,
+      [name]: value
+    }))
+  }
+
+  React.useEffect(() => console.log(userChoices), [userChoices])
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <main className='main'>
+      {
+        gameStatus == "start" ?
+        <Start
+          startGame={() => setGameStatus("playing")}
+          userChoose={userChoose}
+        />
+         :
+        <Quiz 
+          userChoices={userChoices}
+          gameStatus={gameStatus}
+          setGameStatus={setGameStatus}
+        />
+      }
+    </main>
+  )
 }
 
 export default App;
